@@ -5,3 +5,7 @@ type Item struct {
 	Url   string `json:"url"`
 	Title string `json:"title"`
 }
+
+type StatusResponse struct {
+	Status string `json:"status"`
+}

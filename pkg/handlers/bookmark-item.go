@@ -34,7 +34,7 @@ func (h *Handler) AddItem(c *gin.Context) {
 		c.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
-
+	c.JSON(http.StatusOK, models.StatusResponse{Status: "ok"})
 }
 
 func (h *Handler) RemoveItem(c *gin.Context) {
@@ -51,4 +51,5 @@ func (h *Handler) RemoveItem(c *gin.Context) {
 		c.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
+	c.JSON(http.StatusOK, models.StatusResponse{Status: "ok"})
 }
