@@ -1,28 +1,32 @@
 package main
 
 import (
-	"fmt"
+	"github.com/bookmarks-api/config"
+	"github.com/bookmarks-api/pkg/handlers"
 	"github.com/bookmarks-api/pkg/repository"
 	"github.com/bookmarks-api/pkg/services"
-	"github.com/jmoiron/sqlx"
+	"github.com/bookmarks-api/server"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
-	"log"
-	"os"
-
-	"github.com/bookmarks-api/pkg/handlers"
-	"github.com/bookmarks-api/server"
+	"github.com/sirupsen/logrus"
 )
 
 func main() {
+	logrus.SetFormatter(new(logrus.JSONFormatter))
+
 	err := godotenv.Load(".env")
 	if err != nil {
-		log.Fatal("load env variables", err)
+		logrus.Fatalf("load env variables; err: %s", err.Error())
 	}
 
-	db, err := sqlx.Connect("postgres", fmt.Sprintf("user=postgres dbname=bookmarks sslmode=disable password=%s", os.Getenv("DB_PASSWORD")))
+	conf, err := config.InitConfig()
 	if err != nil {
-		log.Fatal("open postgres database", err)
+		logrus.Fatalf("init config; err: %s", err.Error())
+	}
+
+	db, err := repository.Connect(conf)
+	if err != nil {
+		logrus.Fatal("connect to postgres db; %s", err.Error())
 	}
 
 	repo := repository.NewRepository(db)
@@ -31,6 +35,6 @@ func main() {
 
 	srv := new(server.Server)
 	if err = srv.Run(":8000", handler.InitRoutes()); err != nil {
-		log.Fatal("try to run server", err)
+		logrus.Fatalf("try to run server; err: %s", err.Error())
 	}
 }

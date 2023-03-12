@@ -1,0 +1,4 @@
+postgres:
+  user: "postgres"
+  dbname: "bookmarks"
+  sslmode: "disable"
