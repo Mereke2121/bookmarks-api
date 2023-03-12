@@ -25,3 +25,9 @@ func (r *Repository) GetAllItems() ([]models.Item, error) {
 	}
 	return items, nil
 }
+
+func (r *Repository) AddItem(item models.Item) error {
+	query := `insert into bookmarks_items (url, title) values($1, $2)`
+	err := r.db.QueryRow(query, item.Url, item.Title).Err()
+	return err
+}

@@ -3,6 +3,7 @@ package services
 import (
 	"github.com/bookmarks-api/models"
 	"github.com/bookmarks-api/pkg/repository"
+	"log"
 )
 
 type Service struct {
@@ -19,4 +20,13 @@ func (s *Service) GetAllItems() ([]models.Item, error) {
 		return items, err
 	}
 	return items, nil
+}
+
+func (s *Service) AddItem(item models.Item) error {
+	err := s.repo.AddItem(item)
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+	return nil
 }
