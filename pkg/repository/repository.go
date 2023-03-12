@@ -26,8 +26,14 @@ func (r *Repository) GetAllItems() ([]models.Item, error) {
 	return items, nil
 }
 
-func (r *Repository) AddItem(item models.Item) error {
+func (r *Repository) AddItem(item *models.Item) error {
 	query := `insert into bookmarks_items (url, title) values($1, $2)`
-	err := r.db.QueryRow(query, item.Url, item.Title).Err()
+	_, err := r.db.Exec(query, item.Url, item.Title)
+	return err
+}
+
+func (r *Repository) DeleteItem(id int) error {
+	query := `delete from bookmarks_items where id=$1`
+	_, err := r.db.Exec(query, id)
 	return err
 }

@@ -22,10 +22,18 @@ func (s *Service) GetAllItems() ([]models.Item, error) {
 	return items, nil
 }
 
-func (s *Service) AddItem(item models.Item) error {
+func (s *Service) AddItem(item *models.Item) error {
 	err := s.repo.AddItem(item)
 	if err != nil {
 		log.Println(err)
+		return err
+	}
+	return nil
+}
+
+func (s *Service) DeleteItem(id int) error {
+	err := s.repo.DeleteItem(id)
+	if err != nil {
 		return err
 	}
 	return nil
