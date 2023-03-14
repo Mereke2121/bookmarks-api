@@ -6,7 +6,8 @@ import (
 )
 
 type Config struct {
-	DB struct {
+	Port string `yaml:"server_port"`
+	DB   struct {
 		User    string `yaml:"user"`
 		DBName  string `yaml:"dbname"`
 		SSLMode string `yaml:"sslmode"`

@@ -26,7 +26,7 @@ func main() {
 
 	db, err := repository.Connect(conf)
 	if err != nil {
-		logrus.Fatal("connect to postgres db; %s", err.Error())
+		logrus.Fatalf("connect to postgres db; %s", err.Error())
 	}
 
 	repo := repository.NewRepository(db)
@@ -34,7 +34,7 @@ func main() {
 	handler := handlers.NewHandler(service)
 
 	srv := new(server.Server)
-	if err = srv.Run(":8000", handler.InitRoutes()); err != nil {
+	if err = srv.Run(conf.Port, handler.InitRoutes()); err != nil {
 		logrus.Fatalf("try to run server; err: %s", err.Error())
 	}
 }
