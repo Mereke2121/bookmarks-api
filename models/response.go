@@ -4,6 +4,10 @@ type ItemResponse struct {
 	Status string `json:"status"`
 }
 
-type UserResponse struct {
+type AddUserResponse struct {
 	Id int `json:"id"`
+}
+
+type AuthorizationResponse struct {
+	Token string `json:"token"`
 }

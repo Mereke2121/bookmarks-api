@@ -38,12 +38,3 @@ func (s *Service) DeleteItem(id int) error {
 	}
 	return nil
 }
-
-func (s *Service) AddUser(user *models.User) (int, error) {
-	user.Password = generatePassword(user.Password)
-	id, err := s.repo.AddUser(user)
-	if err != nil {
-		return 0, err
-	}
-	return id, nil
-}
