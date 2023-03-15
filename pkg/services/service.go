@@ -14,8 +14,8 @@ func NewService(repo *repository.Repository) *Service {
 	return &Service{repo: repo}
 }
 
-func (s *Service) GetAllItems() ([]models.Item, error) {
-	items, err := s.repo.GetAllItems()
+func (s *Service) GetAllItems(userId int) ([]models.Item, error) {
+	items, err := s.repo.GetAllItems(userId)
 	if err != nil {
 		return items, err
 	}
@@ -31,8 +31,8 @@ func (s *Service) AddItem(item *models.Item) error {
 	return nil
 }
 
-func (s *Service) DeleteItem(id int) error {
-	err := s.repo.DeleteItem(id)
+func (s *Service) DeleteItem(id, userId int) error {
+	err := s.repo.DeleteItem(id, userId)
 	if err != nil {
 		return err
 	}
