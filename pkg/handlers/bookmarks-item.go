@@ -4,58 +4,63 @@ import (
 	"errors"
 	"github.com/bookmarks-api/models"
 	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
-	"log"
 	"net/http"
 	"strconv"
 )
 
 func (h *Handler) GetAllItems(c *gin.Context) {
-	userId, _ := getUserId(c)
+	userId, err := getUserId(c)
+	if err != nil {
+		handleError(c, http.StatusUnauthorized, "get user id from header")
+		return
+	}
 
 	items, err := h.service.GetAllItems(userId)
 	if err != nil {
-		log.Println(err)
-		c.AbortWithError(http.StatusBadRequest, err)
+		handleError(c, http.StatusUnauthorized, "get all items by user id")
 		return
 	}
 	c.JSON(http.StatusOK, items)
 }
 
 func (h *Handler) AddItem(c *gin.Context) {
-	userId, _ := getUserId(c)
+	userId, err := getUserId(c)
+	if err != nil {
+		handleError(c, http.StatusUnauthorized, "get user id from header")
+		return
+	}
 
 	var item models.Item
-	err := c.BindJSON(&item)
+	err = c.BindJSON(&item)
 	if err != nil {
-		logrus.Error(err)
-		c.AbortWithError(http.StatusBadRequest, err)
+		handleError(c, http.StatusUnauthorized, "parse item from json to structure")
 		return
 	}
 	item.UserId = userId
 
 	err = h.service.AddItem(&item)
 	if err != nil {
-		logrus.Error(err)
-		c.AbortWithError(http.StatusBadRequest, err)
+		handleError(c, http.StatusUnauthorized, "add item by user id")
 		return
 	}
 	c.JSON(http.StatusOK, models.ItemResponse{Status: "ok"})
 }
 
 func (h *Handler) RemoveItem(c *gin.Context) {
-	userId, _ := getUserId(c)
+	userId, err := getUserId(c)
+	if err != nil {
+		handleError(c, http.StatusUnauthorized, "get user id from header")
+		return
+	}
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		logrus.Error(err)
-		c.AbortWithError(http.StatusBadRequest, err)
+		handleError(c, http.StatusUnauthorized, "parse int for user id")
 		return
 	}
 
 	err = h.service.DeleteItem(id, userId)
 	if err != nil {
-		logrus.Error(err)
-		c.AbortWithError(http.StatusBadRequest, err)
+		handleError(c, http.StatusUnauthorized, "delete item by user id")
 		return
 	}
 	c.JSON(http.StatusOK, models.ItemResponse{Status: "ok"})
