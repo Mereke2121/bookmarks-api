@@ -10,7 +10,8 @@ import (
 )
 
 const (
-	salt = "adfhlahfpdaohnvfoshj8943jf943jf8943hjriomjf8e3"
+	salt       = "adfhlahfpdaohnvfoshj8943jf943jf8943hjriomjf8e3"
+	signingKey = "39fije9wjfe90"
 )
 
 func generatePassword(password string) string {

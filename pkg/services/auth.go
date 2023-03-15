@@ -2,20 +2,19 @@ package services
 
 import (
 	"github.com/bookmarks-api/models"
-	"github.com/dgrijalva/jwt-go"
+	"github.com/bookmarks-api/pkg/repository"
 	"strconv"
 )
 
-type tokenClaims struct {
-	jwt.StandardClaims
-	UserId int `json:"user_id"`
+type AuthService struct {
+	repo *repository.Repository
 }
 
-const (
-	signingKey = "39fije9wjfe90"
-)
+func NewAuthService(repo *repository.Repository) Authorization {
+	return &AuthService{repo: repo}
+}
 
-func (s *Service) AddUser(user *models.User) (int, error) {
+func (s *AuthService) AddUser(user *models.User) (int, error) {
 	user.Password = generatePassword(user.Password)
 	id, err := s.repo.AddUser(user)
 	if err != nil {
@@ -24,7 +23,7 @@ func (s *Service) AddUser(user *models.User) (int, error) {
 	return id, nil
 }
 
-func (s *Service) Authorize(authData *models.Authorization) (string, error) {
+func (s *AuthService) Authorize(authData *models.Authorization) (string, error) {
 	authData.Password = generatePassword(authData.Password)
 	id, err := s.repo.GetUserId(authData.Email, authData.Password)
 	if err != nil {
@@ -38,6 +37,6 @@ func (s *Service) Authorize(authData *models.Authorization) (string, error) {
 	return token, nil
 }
 
-func (s *Service) ParseToken(token string) (string, error) {
+func (s *AuthService) ParseToken(token string) (string, error) {
 	return VerifyToken(token)
 }

@@ -3,38 +3,29 @@ package services
 import (
 	"github.com/bookmarks-api/models"
 	"github.com/bookmarks-api/pkg/repository"
-	"log"
 )
 
+type Authorization interface {
+	AddUser(user *models.User) (int, error)
+	Authorize(authData *models.Authorization) (string, error)
+	ParseToken(token string) (string, error)
+}
+
+type Items interface {
+	GetAllItems(userId int) ([]models.Item, error)
+	AddItem(item *models.Item) error
+	DeleteItem(id, userId int) error
+}
+
 type Service struct {
-	repo *repository.Repository
+	Authorization
+	Items
+	//repo *repository.Repository
 }
 
 func NewService(repo *repository.Repository) *Service {
-	return &Service{repo: repo}
-}
-
-func (s *Service) GetAllItems(userId int) ([]models.Item, error) {
-	items, err := s.repo.GetAllItems(userId)
-	if err != nil {
-		return items, err
+	return &Service{
+		Authorization: NewAuthService(repo),
+		Items:         NewItemsService(repo),
 	}
-	return items, nil
-}
-
-func (s *Service) AddItem(item *models.Item) error {
-	err := s.repo.AddItem(item)
-	if err != nil {
-		log.Println(err)
-		return err
-	}
-	return nil
-}
-
-func (s *Service) DeleteItem(id, userId int) error {
-	err := s.repo.DeleteItem(id, userId)
-	if err != nil {
-		return err
-	}
-	return nil
 }
