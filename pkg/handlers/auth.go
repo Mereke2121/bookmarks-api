@@ -9,13 +9,13 @@ import (
 func (h *Handler) SignUp(c *gin.Context) {
 	var user models.User
 	if err := c.BindJSON(&user); err != nil {
-		handleError(c, http.StatusUnauthorized, "parse user model from json to structure")
+		handleError(c, http.StatusBadRequest, "parse user model from json to structure")
 		return
 	}
 
 	id, err := h.service.AddUser(&user)
 	if err != nil {
-		handleError(c, http.StatusUnauthorized, "add user")
+		handleError(c, http.StatusInternalServerError, "add user")
 		return
 	}
 	c.JSON(http.StatusOK, models.AddUserResponse{
@@ -26,7 +26,7 @@ func (h *Handler) SignUp(c *gin.Context) {
 func (h *Handler) SignIn(c *gin.Context) {
 	var authData models.Authorization
 	if err := c.BindJSON(&authData); err != nil {
-		handleError(c, http.StatusUnauthorized, "parse auth data from json to structure")
+		handleError(c, http.StatusBadRequest, "parse auth data from json to structure")
 		return
 	}
 

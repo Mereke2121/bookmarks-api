@@ -17,19 +17,19 @@ func (h *Handler) UserIdentity(c *gin.Context) {
 	// "Bearer <token>"
 	headerParts := strings.Split(authHeader, " ")
 	if len(headerParts) != 2 {
-		handleError(c, http.StatusUnauthorized, "auth token in wrong format")
+		handleError(c, http.StatusBadRequest, "auth token in wrong format")
 		return
 	}
 
 	userId, err := h.service.ParseToken(headerParts[1])
 	if err != nil {
-		handleError(c, http.StatusUnauthorized, "parse jwt token")
+		handleError(c, http.StatusBadRequest, "parse jwt token")
 		return
 	}
 
 	id, err := strconv.Atoi(userId)
 	if err != nil {
-		handleError(c, http.StatusUnauthorized, "parse int for user id")
+		handleError(c, http.StatusBadRequest, "parse int for user id")
 		return
 	}
 

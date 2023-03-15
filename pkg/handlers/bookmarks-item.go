@@ -17,7 +17,7 @@ func (h *Handler) GetAllItems(c *gin.Context) {
 
 	items, err := h.service.GetAllItems(userId)
 	if err != nil {
-		handleError(c, http.StatusUnauthorized, "get all items by user id")
+		handleError(c, http.StatusInternalServerError, "get all items by user id")
 		return
 	}
 	c.JSON(http.StatusOK, items)
@@ -33,14 +33,14 @@ func (h *Handler) AddItem(c *gin.Context) {
 	var item models.Item
 	err = c.BindJSON(&item)
 	if err != nil {
-		handleError(c, http.StatusUnauthorized, "parse item from json to structure")
+		handleError(c, http.StatusBadRequest, "parse item from json to structure")
 		return
 	}
 	item.UserId = userId
 
 	err = h.service.AddItem(&item)
 	if err != nil {
-		handleError(c, http.StatusUnauthorized, "add item by user id")
+		handleError(c, http.StatusInternalServerError, "add item by user id")
 		return
 	}
 	c.JSON(http.StatusOK, models.ItemResponse{Status: "ok"})
@@ -54,13 +54,13 @@ func (h *Handler) RemoveItem(c *gin.Context) {
 	}
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		handleError(c, http.StatusUnauthorized, "parse int for user id")
+		handleError(c, http.StatusBadRequest, "parse int for user id")
 		return
 	}
 
 	err = h.service.DeleteItem(id, userId)
 	if err != nil {
-		handleError(c, http.StatusUnauthorized, "delete item by user id")
+		handleError(c, http.StatusInternalServerError, "delete item by user id")
 		return
 	}
 	c.JSON(http.StatusOK, models.ItemResponse{Status: "ok"})
