@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"errors"
 	"github.com/bookmarks-api/models"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -66,16 +65,24 @@ func (h *Handler) RemoveItem(c *gin.Context) {
 	c.JSON(http.StatusOK, models.ItemResponse{Status: "ok"})
 }
 
-func getUserId(c *gin.Context) (int, error) {
-	id, ok := c.Get("userId")
-	if !ok {
-		return 0, errors.New("user id not found")
+func (h *Handler) GetItemById(c *gin.Context) {
+	userId, err := getUserId(c)
+	if err != nil {
+		handleError(c, http.StatusUnauthorized, "get user id from header")
+		return
 	}
 
-	idInt, ok := id.(int)
-	if !ok {
-		return 0, errors.New("user id not found")
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		handleError(c, http.StatusBadRequest, "parse int for user id")
+		return
 	}
 
-	return idInt, nil
+	item, err := h.service.GetItemById(id, userId)
+	if err != nil {
+		handleError(c, http.StatusInternalServerError, "get item by user id")
+		return
+	}
+
+	c.JSON(http.StatusOK, item)
 }

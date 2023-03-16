@@ -11,6 +11,8 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+//TODO: покрыть тестами
+//TODO: написать swagger документацию
 func main() {
 	logrus.SetFormatter(new(logrus.JSONFormatter))
 

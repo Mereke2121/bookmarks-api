@@ -16,6 +16,7 @@ func (h *Handler) InitRoutes() http.Handler {
 		api.GET("/", h.GetAllItems)
 		api.POST("/", h.AddItem)
 		api.DELETE("/:id", h.RemoveItem)
+		api.GET("/:id", h.GetItemById)
 	}
 
 	return mux.Handler()

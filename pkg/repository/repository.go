@@ -12,6 +12,7 @@ type Authorization interface {
 
 type Items interface {
 	GetAllItems(userId int) ([]models.Item, error)
+	GetItemById(id, userId int) (models.Item, error)
 	AddItem(item *models.Item) error
 	DeleteItem(id, userId int) error
 }

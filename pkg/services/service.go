@@ -13,6 +13,7 @@ type Authorization interface {
 
 type Items interface {
 	GetAllItems(userId int) ([]models.Item, error)
+	GetItemById(id, userId int) (models.Item, error)
 	AddItem(item *models.Item) error
 	DeleteItem(id, userId int) error
 }
@@ -20,7 +21,6 @@ type Items interface {
 type Service struct {
 	Authorization
 	Items
-	//repo *repository.Repository
 }
 
 func NewService(repo *repository.Repository) *Service {

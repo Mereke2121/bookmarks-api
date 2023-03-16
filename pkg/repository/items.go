@@ -35,3 +35,14 @@ func (r *ItemsRepository) DeleteItem(id, userId int) error {
 	_, err := r.db.Exec(query, id, userId)
 	return err
 }
+
+func (r *ItemsRepository) GetItemById(id, userId int) (models.Item, error) {
+	query := `select id, url, title from bookmarks_items where id=$1 and user_id=$2`
+
+	var item models.Item
+	err := r.db.Get(&item, query, id, userId)
+	if err != nil {
+		return models.Item{}, err
+	}
+	return item, nil
+}

@@ -6,7 +6,7 @@ CREATE TABLE users (
 );
 
 CREATE TABLE bookmarks_items (
-    user_id int references users (id) on delete cascade not null,
+    user_id INT REFERENCES users (id) ON DELETE CASCADE NOT NULL,
     id SERIAL PRIMARY KEY,
     url VARCHAR(255) NOT NULL,
     title VARCHAR(255) NOT NULL
