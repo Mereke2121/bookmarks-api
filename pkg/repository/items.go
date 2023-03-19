@@ -18,10 +18,7 @@ func (r *ItemsRepository) GetAllItems(userId int) ([]models.Item, error) {
 	query := `select id, url, title from bookmarks_items where user_id=$1`
 
 	err := r.db.Select(&items, query, userId)
-	if err != nil {
-		return items, err
-	}
-	return items, nil
+	return items, err
 }
 
 func (r *ItemsRepository) AddItem(item *models.Item) error {
@@ -41,8 +38,5 @@ func (r *ItemsRepository) GetItemById(id, userId int) (models.Item, error) {
 
 	var item models.Item
 	err := r.db.Get(&item, query, id, userId)
-	if err != nil {
-		return models.Item{}, err
-	}
-	return item, nil
+	return item, err
 }

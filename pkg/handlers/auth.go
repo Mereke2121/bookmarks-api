@@ -27,13 +27,13 @@ func (h *Handler) SignUp(c *gin.Context) {
 func (h *Handler) SignIn(c *gin.Context) {
 	var authData models.Authorization
 	if err := c.BindJSON(&authData); err != nil {
-		handleError(c, http.StatusBadRequest, "parse auth data from json to structure")
+		handleError(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	token, err := h.service.Authorize(&authData)
 	if err != nil {
-		handleError(c, http.StatusUnauthorized, "try to authorize")
+		handleError(c, http.StatusUnauthorized, err.Error())
 		return
 	}
 	c.JSON(http.StatusOK, models.AuthorizationResponse{

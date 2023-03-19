@@ -23,13 +23,13 @@ func (h *Handler) UserIdentity(c *gin.Context) {
 
 	userId, err := h.service.ParseToken(headerParts[1])
 	if err != nil {
-		handleError(c, http.StatusBadRequest, "parse jwt token")
+		handleError(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	id, err := strconv.Atoi(userId)
 	if err != nil {
-		handleError(c, http.StatusBadRequest, "parse int for user id")
+		handleError(c, http.StatusBadRequest, err.Error())
 		return
 	}
 

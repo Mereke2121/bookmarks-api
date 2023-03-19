@@ -6,6 +6,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
+	"github.com/pkg/errors"
 	"time"
 )
 
@@ -25,10 +26,7 @@ func CreateToken(userId string) (string, error) {
 	claims["userId"] = userId
 	claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
 	tokenString, err := token.SignedString([]byte(signingKey))
-	if err != nil {
-		return "", err
-	}
-	return tokenString, nil
+	return tokenString, err
 }
 
 func VerifyToken(tokenString string) (string, error) {
@@ -40,13 +38,13 @@ func VerifyToken(tokenString string) (string, error) {
 	})
 
 	if err != nil {
-		return "", err
+		return "", errors.Wrap(err, "parse jwt token")
 	}
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 		userId := claims["userId"].(string)
 		return userId, nil
 	} else {
-		return "", fmt.Errorf("invalid token")
+		return "", errors.Errorf("invalid token")
 	}
 }
