@@ -5,6 +5,8 @@ import (
 	"github.com/bookmarks-api/pkg/repository"
 )
 
+//go:generate mockgen -source=service.go -destination=mocks/mock.go
+
 type Authorization interface {
 	AddUser(user *models.User) (int, error)
 	Authorize(authData *models.Authorization) (string, error)

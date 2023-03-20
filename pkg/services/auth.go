@@ -17,8 +17,7 @@ func NewAuthService(repo *repository.Repository) Authorization {
 
 func (s *AuthService) AddUser(user *models.User) (int, error) {
 	user.Password = generatePassword(user.Password)
-	id, err := s.repo.AddUser(user)
-	return id, err
+	return s.repo.AddUser(user)
 }
 
 func (s *AuthService) Authorize(authData *models.Authorization) (string, error) {

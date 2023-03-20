@@ -13,7 +13,6 @@ func handleError(c *gin.Context, status int, message string) {
 }
 
 func getUserId(c *gin.Context) (int, error) {
-	// TODO: вынести в константы такие значения как userId
 	id, ok := c.Get("userId")
 	if !ok {
 		return 0, errors.New("user id not found")

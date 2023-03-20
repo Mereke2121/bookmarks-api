@@ -1,22 +1,21 @@
 package handlers
 
 import (
-	"fmt"
 	"github.com/bookmarks-api/models"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
 func (h *Handler) SignUp(c *gin.Context) {
-	var user models.User
+	var user *models.User
 	if err := c.BindJSON(&user); err != nil {
-		handleError(c, http.StatusBadRequest, fmt.Sprintf("parse user model from json to structure; err: %s", err.Error()))
+		handleError(c, http.StatusBadRequest, "invalid input body")
 		return
 	}
 
-	id, err := h.service.AddUser(&user)
+	id, err := h.service.AddUser(user)
 	if err != nil {
-		handleError(c, http.StatusInternalServerError, fmt.Sprintf("add user; err: %s", err.Error()))
+		handleError(c, http.StatusInternalServerError, "service failure")
 		return
 	}
 	c.JSON(http.StatusOK, models.AddUserResponse{
