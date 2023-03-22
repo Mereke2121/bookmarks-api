@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  app:
+    build: ./
+    command: ./wait-for-postgres.sh db ./bookmarks-api
+    ports:
+       - 8000:8001
+    depends_on:
+      - db
+    environment:
+      - DB_PASSWORD=212121
+  db:
+    restart: always
+    image: postgres:latest
+    volumes:
+      - ./.database/data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=212121
+    ports:
+      - 5432:5432
