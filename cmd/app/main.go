@@ -31,6 +31,7 @@ func main() {
 	if err != nil {
 		logrus.Fatalf("connect to postgres db; %s", err.Error())
 	}
+	defer db.Close()
 
 	repo := repository.NewRepository(db)
 	service := services.NewService(repo)

@@ -21,12 +21,12 @@ func (s *ItemsService) GetAllItems(userId int) ([]models.Item, error) {
 	return items, nil
 }
 
-func (s *ItemsService) AddItem(item *models.Item) error {
-	err := s.repo.AddItem(item)
+func (s *ItemsService) AddItem(item *models.Item) (int, error) {
+	id, err := s.repo.AddItem(item)
 	if err != nil {
-		return err
+		return 0, err
 	}
-	return nil
+	return id, nil
 }
 
 func (s *ItemsService) DeleteItem(id, userId int) error {

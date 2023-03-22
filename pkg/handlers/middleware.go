@@ -16,7 +16,7 @@ func (h *Handler) UserIdentity(c *gin.Context) {
 
 	// "Bearer <token>"
 	headerParts := strings.Split(authHeader, " ")
-	if len(headerParts) != 2 || headerParts[0] != "Bearer" || headerParts[1] != "Token" {
+	if len(headerParts) != 2 || headerParts[0] != "Bearer" || headerParts[1] == "" {
 		handleError(c, http.StatusUnauthorized, "auth token in wrong format")
 		return
 	}

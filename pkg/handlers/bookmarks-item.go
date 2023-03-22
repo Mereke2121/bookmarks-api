@@ -37,12 +37,12 @@ func (h *Handler) AddItem(c *gin.Context) {
 	}
 	item.UserId = userId
 
-	err = h.service.AddItem(&item)
+	id, err := h.service.AddItem(&item)
 	if err != nil {
 		handleError(c, http.StatusInternalServerError, err.Error())
 		return
 	}
-	c.JSON(http.StatusOK, models.ItemResponse{Status: "ok"})
+	c.JSON(http.StatusOK, models.AddItemResponse{Id: id})
 }
 
 func (h *Handler) RemoveItem(c *gin.Context) {
@@ -62,7 +62,7 @@ func (h *Handler) RemoveItem(c *gin.Context) {
 		handleError(c, http.StatusInternalServerError, err.Error())
 		return
 	}
-	c.JSON(http.StatusOK, models.ItemResponse{Status: "ok"})
+	c.JSON(http.StatusOK, models.RemoveItemResponse{Status: "OK"})
 }
 
 func (h *Handler) GetItemById(c *gin.Context) {

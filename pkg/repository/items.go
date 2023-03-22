@@ -32,21 +32,22 @@ func (r *ItemsRepository) GetAllItems(userId int) ([]models.Item, error) {
 	return items, err
 }
 
-func (r *ItemsRepository) AddItem(item *models.Item) error {
+func (r *ItemsRepository) AddItem(item *models.Item) (int, error) {
 	tx, err := r.db.Begin()
 	if err != nil {
-		return errors.Wrap(err, "start db")
+		return 0, errors.Wrap(err, "start db")
 	}
 
-	query := `insert into bookmarks_items (user_id, url, title) values($1, $2, $3)`
+	query := `insert into bookmarks_items (user_id, url, title) values($1, $2, $3) returning id`
 
-	_, err = r.db.Exec(query, item.UserId, item.Url, item.Title)
+	var id int
+	err = r.db.QueryRow(query, item.UserId, item.Url, item.Title).Scan(&id)
 	if err != nil {
 		tx.Rollback()
-		return errors.Wrap(err, "insert items into the db")
+		return 0, errors.Wrap(err, "insert items into the db")
 	}
 
-	return err
+	return id, nil
 }
 
 func (r *ItemsRepository) DeleteItem(id, userId int) error {
