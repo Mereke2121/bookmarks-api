@@ -9,11 +9,11 @@ import (
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"github.com/sirupsen/logrus"
+	"os"
+	"os/signal"
+	"syscall"
 )
 
-//TODO: покрыть тестами
-//TODO: написать swagger документацию
-//TODO: graceful shutdown
 func main() {
 	logrus.SetFormatter(new(logrus.JSONFormatter))
 
@@ -31,14 +31,31 @@ func main() {
 	if err != nil {
 		logrus.Fatalf("connect to postgres db; %s", err.Error())
 	}
-	defer db.Close()
 
 	repo := repository.NewRepository(db)
 	service := services.NewService(repo)
 	handler := handlers.NewHandler(service)
 
 	srv := new(server.Server)
-	if err = srv.Run(conf.Port, handler.InitRoutes()); err != nil {
-		logrus.Fatalf("try to run server; err: %s", err.Error())
+	go func() {
+		if err = srv.Run(conf.Port, handler.InitRoutes()); err != nil {
+			logrus.Fatalf("try to run server; err: %s", err.Error())
+		}
+	}()
+
+	logrus.Println("app is started")
+
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
+	<-quit
+
+	logrus.Println("app is shutting down")
+
+	if err := srv.ShutDown(); err != nil {
+		logrus.Errorf("error occured on server shutting down; err: %s", err.Error())
+	}
+
+	if err := db.Close(); err != nil {
+		logrus.Errorf("error occured on db closing connection; err: %s", err.Error())
 	}
 }
