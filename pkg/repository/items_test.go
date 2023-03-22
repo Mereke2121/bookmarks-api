@@ -2,6 +2,7 @@ package repository
 
 import (
 	"github.com/bookmarks-api/models"
+	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
 	sqlmock "github.com/zhashkevych/go-sqlxmock"
 	"log"
@@ -27,12 +28,12 @@ func TestItemsPostgres_Create(t *testing.T) {
 		wantErr      bool
 	}{
 		{
+			name: "OK",
 			item: models.Item{
 				UserId: 1,
 				Url:    "test url",
 				Title:  "test title",
 			},
-			name: "OK",
 			mockBehavior: func(item models.Item) {
 				mock.ExpectBegin()
 
@@ -42,6 +43,23 @@ func TestItemsPostgres_Create(t *testing.T) {
 				mock.ExpectCommit()
 			},
 			id: 0,
+		},
+		{
+			name: "Empty Fields",
+			item: models.Item{
+				UserId: 1,
+				Title:  "test title",
+			},
+			mockBehavior: func(item models.Item) {
+				mock.ExpectBegin()
+
+				rows := sqlmock.NewRows([]string{"id"}).AddRow(item.Id).RowError(1, errors.New("some error"))
+				mock.ExpectQuery(`insert into bookmarks_items`).WithArgs(item.UserId, item.Url, item.Title).WillReturnRows(rows)
+
+				mock.ExpectRollback()
+			},
+			id:      0,
+			wantErr: true,
 		},
 	}
 
