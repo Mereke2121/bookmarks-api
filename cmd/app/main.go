@@ -13,6 +13,7 @@ import (
 
 //TODO: покрыть тестами
 //TODO: написать swagger документацию
+//TODO: graceful shutdown
 func main() {
 	logrus.SetFormatter(new(logrus.JSONFormatter))
 
